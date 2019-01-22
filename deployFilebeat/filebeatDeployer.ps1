@@ -1,3 +1,13 @@
+#Usage example:
+#.\filebeatDeployer.ps1 -archiveFileFullPath C:\sandbox\deployFileBeat\script\filebeat-6.5.4-windows-x86_64.zip  -configTemplateFullPath C:\sandbox\deployFileBeat\script\filebeat_template.yml
+param
+(
+    [string] $archiveFileFullPath = "a", #Join-Path $PWD "filebeat-6.5.4-windows-x86_64.zip"
+    [string] $configTemplateFullPath = "b" #Join-Path $PWD "filebeat_template.yml"
+)
+
+$PWD = (Get-Item -Path ".\").FullName
+
 $filebeatServiceName = 'filebeat'
 $filebeatFinalLocation = "C:\Program Files\Filebeat_tst"
 $filebeatExecutableName = "filebeat.exe"
@@ -8,12 +18,10 @@ $filebeatConfigName = "filebeat.yml"
 If (!(Get-Service $filebeatServiceName -ErrorAction SilentlyContinue)) {
     Write-Host("*****Installing filebeat*****")
 
-    $PWD = (Get-Item -Path ".\").FullName
-    $fullSrcPath = Join-Path $PWD "filebeat-6.5.4-windows-x86_64.zip"
     $tmpDest = Join-Path $PWD "tmpDir"
 
-    Write-Host("*****Extracting $fullSrcPath to $tmpDest*****")
-    Expand-Archive $fullSrcPath $tmpDest
+    Write-Host("*****Extracting $archiveFileFullPath to $tmpDest*****")
+    Expand-Archive $archiveFileFullPath $tmpDest
     Write-Host("*****Finished extracting*****")
 
     $filebeatContentDir = Get-ChildItem -Recurse -Filter $filebeatExecutableName | Select-Object -ExpandProperty DirectoryName -Unique
@@ -32,8 +40,7 @@ If ((Get-Service $filebeatServiceName).Status -eq 'Running') {
     Write-Host "Stopping $filebeatServiceName"
 }
 
-
-$srcFileName = "filebeat_template.yml"
+ 
 $destFileName = Join-Path $filebeatFinalLocation $filebeatConfigName
 
 $privateKey = 'PRIVATE_KEY: "myPrivateKey"'
@@ -43,7 +50,7 @@ $subsystem = 'SUB_SYSTEM: "mySubsystem1"'
 
 Write-Host "Updating $destFileName"
 
-(Get-Content $srcFileName) `
+(Get-Content $configTemplateFullPath) `
     -replace 'PRIVATE_KEY: .*', $privateKey `
     -replace 'COMPANY_ID: .*', $companyId `
     -replace 'APP_NAME: .*', $appName `
