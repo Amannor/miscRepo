@@ -1,0 +1,35 @@
+#=========================== Filebeat prospectors =============================
+filebeat.prospectors:
+- input_type: log
+  paths:
+    - C:\optiLogs\*\*.log
+
+  harvester_buffer_size: 655360
+  max_bytes: 10485760
+fields:
+  PRIVATE_KEY: "4201ee70-4c50-1590-fb49-12a5acb88b0d"
+  COMPANY_ID: "1377"
+  APP_NAME: "ExploraionEngine-QA"
+  SUB_SYSTEM: "TSS-QA"
+
+#============================= Filebeat modules ===============================
+
+filebeat.config.modules:
+  # Glob pattern for configuration loading
+  path: ${path.config}/modules.d/*.yml
+
+  # Set to true to enable config reloading
+  reload.enabled: false
+
+#==================== Elasticsearch template setting ==========================
+
+setup.template.settings:
+  index.number_of_shards: 3
+
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+  enabled: true
+  hosts: ["logstashserver.coralogix.com:5015"]
+  index: logstash
+  tls.certificate_authorities: ["C:/Program Files/Winlogbeat/ca.crt"]
+  ssl.certificate_authorities: ["C:/Program Files/Winlogbeat/ca.crt"]
