@@ -8,7 +8,6 @@ param
 )
 
 
-
 $archiveFileFullPath = Join-Path $wd "winlogbeat-6.5.4-windows-x86_64.zip"
 $configTemplateFullPath = Join-Path $wd "winlogbeat_template.yml"
 
@@ -44,8 +43,9 @@ If ((Get-Service $serviceName).Status -eq 'Running') {
     Stop-Service $serviceName
     Write-Host "Stopping $serviceName"
 }
+
 $certificationFile = Join-Path $wd "ca.crt"
-Copy-Item  $certificationFile $finalLocation #Copy-Item and not robocopy because $finalLocation doesn't contain a trailing backslash
+Copy-Item $certificationFile $finalLocation #Copy-Item and not robocopy because $finalLocation doesn't contain a trailing backslash
  
 $destFileName = Join-Path $finalLocation $configFile
 

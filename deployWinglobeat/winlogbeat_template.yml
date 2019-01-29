@@ -9,8 +9,8 @@ filebeat.prospectors:
 fields:
   PRIVATE_KEY: "4201ee70-4c50-1590-fb49-12a5acb88b0d"
   COMPANY_ID: "1377"
-  APP_NAME: "ExploraionEngine-QA"
-  SUB_SYSTEM: "TSS-QA"
+  APP_NAME: "ExploraionEngine.Web"
+  SUB_SYSTEM: "TSS_QA"
 
 #============================= Filebeat modules ===============================
 
