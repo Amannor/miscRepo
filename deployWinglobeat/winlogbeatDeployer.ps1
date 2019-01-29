@@ -44,7 +44,7 @@ If ((Get-Service $serviceName).Status -eq 'Running') {
     Stop-Service $serviceName
     Write-Host "Stopping $serviceName"
 }
-$certificationFile = Join-Path %wd "ca.crt"
+$certificationFile = Join-Path $wd "ca.crt"
 Copy-Item  $certificationFile $finalLocation #Copy-Item and not robocopy because $finalLocation doesn't contain a trailing backslash
  
 $destFileName = Join-Path $finalLocation $configFile
