@@ -1,35 +1,27 @@
-#=========================== Filebeat prospectors =============================
-filebeat.prospectors:
-- input_type: log
-  paths:
-    - C:\optiLogs\*\*.log
+#=========================== Winlogbeat Event Logs ============================
 
-  harvester_buffer_size: 655360
-  max_bytes: 10485760
+winlogbeat.event_logs:
+- name: Application
+ fields_under_root: true
+- name: Security
+ fields_under_root: true
+- name: System
+ fields_under_root: true
+
 fields:
-  PRIVATE_KEY: "4201ee70-4c50-1590-fb49-12a5acb88b0d"
-  COMPANY_ID: "1377"
-  APP_NAME: "ExploraionEngine.Web"
-  SUB_SYSTEM: "TSS_QA"
-
-#============================= Filebeat modules ===============================
-
-filebeat.config.modules:
-  # Glob pattern for configuration loading
-  path: ${path.config}/modules.d/*.yml
-
-  # Set to true to enable config reloading
-  reload.enabled: false
-
-#==================== Elasticsearch template setting ==========================
+   PRIVATE_KEY: PRIVATE_KEY
+   COMPANY_ID: myCompId
+   APP_NAME: "myApp"
+   SUB_SYSTEM: "mySubsystem"
 
 setup.template.settings:
-  index.number_of_shards: 3
+   index.number_of_shards: 3
 
 #----------------------------- Logstash output --------------------------------
+
 output.logstash:
-  enabled: true
-  hosts: ["logstashserver.coralogix.com:5015"]
-  index: logstash
-  tls.certificate_authorities: ["C:/Program Files/Winlogbeat/ca.crt"]
-  ssl.certificate_authorities: ["C:/Program Files/Winlogbeat/ca.crt"]
+   enabled: true
+   hosts: ["logstashserver.coralogix.com:5015"]
+   index: logstash
+   tls.certificate_authorities: ["C:/Program Files/Winlogbeat/ca.crt"]
+   ssl.certificate_authorities: ["C:/Program Files/Winlogbeat/ca.crt"]
