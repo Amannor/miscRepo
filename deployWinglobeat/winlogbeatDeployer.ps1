@@ -1,5 +1,5 @@
-﻿#Usage example:
-#PS > .\winlogbeatDeployer.ps1 -appName ExplorationEngine.Web  -subsystem TSS_QA -wd C:\LoggingArtifacts
+#Usage example:
+#PS > .\winlogbeatDeployer.ps1 -appName ExplorationEngine.Web  -subsystem TSS_QA -wd C:\Optimove\Source\Repos\ExplorationEngine\LoggingArtifacts
 param
 (
     [string] $appName = "ExplorationEngine.Web",
@@ -24,10 +24,10 @@ If (!(Get-Service $serviceName -ErrorAction SilentlyContinue)) {
     $tmpDest = Join-Path $wd "tmpDir"
 
     Write-Host("*****Extracting $archiveFileFullPath to $tmpDest*****")
-    Expand-Archive $archiveFileFullPath $tmpDest
+    Expand-Archive $archiveFileFullPath $tmpDest -Force
     Write-Host("*****Finished extracting*****")
 
-    $contentDir = Get-ChildItem -Recurse -Filter $exeName | Select-Object -ExpandProperty DirectoryName -Unique
+    $contentDir = Get-ChildItem -Path $tmpDest -Recurse -Filter $exeName | Select-Object -ExpandProperty DirectoryName -Unique
     Write-Host("*****Found $exeName in $contentDir - copying to $finalLocation*****")
     robocopy $contentDir $finalLocation /MIR /W:5 /R:2 
     Write-Host("*****Finished copying, deleting $tmpDest*****")
