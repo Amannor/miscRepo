@@ -1,15 +1,16 @@
-﻿#Usage example:
-#.\filebeatDeployer.ps1 -appName ExplorationEngine.Web  -subsystem TSS_QA
+#Usage example:
+#PS > .\filebeatDeployer.ps1 -appName ExplorationEngine.Web  -subsystem TSS_QA
 param
 (
     [string] $appName  = "ExplorationEngine.Web",
-    [string] $subsystem  = "TSS_QA"
+    [string] $subsystem  = "TSS_QA",
+    [string] $wd = (Get-Item -Path ".\").FullName
 )
 
-$PWD = (Get-Item -Path ".\").FullName
 
-$archiveFileFullPath = Join-Path $PWD "filebeat-6.5.4-windows-x86_64.zip"
-$configTemplateFullPath = Join-Path $PWD "filebeat_template.yml"
+
+$archiveFileFullPath = Join-Path $wd "filebeat-6.5.4-windows-x86_64.zip"
+$configTemplateFullPath = Join-Path $wd "filebeat_template.yml"
 
 $filebeatServiceName = 'filebeat'
 $filebeatFinalLocation = "C:\Program Files\Filebeat"
@@ -21,7 +22,7 @@ $filebeatConfigName = "filebeat.yml"
 If (!(Get-Service $filebeatServiceName -ErrorAction SilentlyContinue)) {
     Write-Host("*****Installing filebeat*****")
 
-    $tmpDest = Join-Path $PWD "tmpDir"
+    $tmpDest = Join-Path $wd "tmpDir"
 
     Write-Host("*****Extracting $archiveFileFullPath to $tmpDest*****")
     Expand-Archive $archiveFileFullPath $tmpDest
@@ -47,18 +48,12 @@ If ((Get-Service $filebeatServiceName).Status -eq 'Running') {
  
 $destFileName = Join-Path $filebeatFinalLocation $filebeatConfigName
 
-# $privateKey = "PRIVATE_KEY: \`"$privateKey \`""
-# $companyId = "COMPANY_ID: \`"$companyId \`"" 
-# $appName = 'APP_NAME: "'+${appName}+'"'
-$appName = "APP_NAME: \`"$appName \`""
-# $subsystem = 'SUB_SYSTEM: "mySubsystem1"'
-$subsystem = "SUB_SYSTEM: \`"$subsystem\`""
+$appName = "APP_NAME: `"$appName`""
+$subsystem = "SUB_SYSTEM: `"$subsystem`""
 
 Write-Host "Updating $destFileName"
 
 (Get-Content $configTemplateFullPath) `
-    # -replace 'PRIVATE_KEY: .*', $privateKey `
-    # -replace 'COMPANY_ID: .*', $companyId `
     -replace 'APP_NAME: .*', $appName `
     -replace 'SUB_SYSTEM: .*', $subsystem |
     Out-File $destFileName
