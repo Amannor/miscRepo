@@ -10,3 +10,5 @@ Since this should be run as a Visual Studio post build event, here's a list of p
 $(SolutionDir): C:\script\
 $(ProjectName): MyProject
 $(ConfigurationName): Myubsystem
+
+*Note: to improve running time, the part of unarchiving the filebeat zip file was skipped. Instead this code ships with the (unarchived) filebeat folder 
